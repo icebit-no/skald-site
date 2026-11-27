@@ -1,0 +1,61 @@
+---
+import Base from '../layouts/Base.astro';
+import Wordmark from '../components/Wordmark.astro';
+import { t } from '../i18n/ui';
+
+// One page for every address nginx has no file for; it cannot know which language the address was in.
+const nn = t('nn');
+const nb = t('nb');
+---
+
+<Base lang="nn" path="/" title={`${nn.notFoundTitle} – Skald`} description={nn.notFoundText} noindex hasLanguages={false}>
+  <div class="wrap page">
+    <a class="home" href="/"><Wordmark class="mark" /></a>
+    <h1>{nn.notFoundTitle}</h1>
+    <p>{nn.notFoundText} <a href="/">{nn.notFoundHome}</a></p>
+    <div lang="nb" class="other">
+      <h2>{nb.notFoundTitle}</h2>
+      <p>{nb.notFoundText} <a href="/nb">{nb.notFoundHome}</a></p>
+    </div>
+  </div>
+</Base>
+
+<style>
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-block: 4rem 6rem;
+  }
+
+  .home {
+    align-self: flex-start;
+    margin-bottom: 1.5rem;
+  }
+
+  .home :global(.mark) {
+    display: block;
+    width: 9rem;
+    height: auto;
+    fill: none;
+    stroke: var(--bone);
+    stroke-width: 11;
+  }
+
+  h1 {
+    font: 650 clamp(2rem, 1.5rem + 2vw, 2.75rem)/1.1 var(--display);
+  }
+
+  .other {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--seam);
+    color: var(--ash);
+  }
+
+  .other h2 {
+    margin-bottom: 0.4rem;
+    font: 650 1.4rem/1.2 var(--display);
+    color: var(--bone);
+  }
+</style>

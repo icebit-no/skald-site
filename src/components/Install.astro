@@ -1,0 +1,129 @@
+---
+import { toRunes } from '../runes';
+import type { Lang } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import { releasesUrl } from '../releases';
+
+interface Props {
+  lang: Lang;
+}
+
+const text = t(Astro.props.lang);
+// The packages docs/plan.md in icebit-no/skald plans: one Homebrew tap and one Scoop bucket for every icebit app
+// (D-14), winget, and the AUR package skald-bin.
+const systems = [
+  { id: 'macos', name: 'macOS', ways: [{ label: text.withHomebrew, lines: ['brew install --cask icebit-no/tap/skald'] }] },
+  {
+    id: 'windows',
+    name: 'Windows',
+    ways: [
+      { label: text.withWinget, lines: ['winget install Icebit.Skald'] },
+      { label: text.orWithScoop, lines: ['scoop bucket add icebit https://github.com/icebit-no/scoop-bucket', 'scoop install icebit/skald'] },
+    ],
+  },
+  { id: 'linux', name: 'Linux', ways: [{ label: text.fromAur, lines: ['yay -S skald-bin'] }] },
+];
+---
+
+<section class="section" id="installer" aria-labelledby="install-heading">
+  <div class="wrap">
+    <span class="runes" aria-hidden="true">{toRunes(text.installHeading)}</span>
+    <h2 class="section-heading" id="install-heading">{text.installHeading}</h2>
+    <p class="notice">
+      {text.installNotYet} <a href={releasesUrl}>{text.installFollow}</a>.
+    </p>
+
+    <div class="systems">
+      {
+        systems.map((system) => (
+          <article class="system" id={system.id} aria-labelledby={`${system.id}-heading`}>
+            <h3 id={`${system.id}-heading`}>{system.name}</h3>
+            {system.ways.map((way) => (
+              <>
+                <p class="way">{way.label}</p>
+                <pre><code>{way.lines.map((command) => <span class="line"><span class="prompt" aria-hidden="true">$ </span>{command}</span>)}</code></pre>
+              </>
+            ))}
+          </article>
+        ))
+      }
+    </div>
+
+    <p class="build">
+      <a href="https://github.com/icebit-no/skald">{text.orBuild}</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .notice {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    padding: 0.9rem 1.1rem;
+    border-left: 3px solid var(--gold);
+    background: var(--hearth);
+    color: var(--bone);
+  }
+
+  .systems {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 2rem;
+  }
+
+  .system {
+    min-width: 0;
+    padding: 1.25rem;
+    border: 1px solid var(--seam);
+    border-radius: 6px;
+    background: var(--hearth);
+    scroll-margin-top: 1.5rem;
+  }
+
+  .system:target {
+    border-color: var(--gold);
+  }
+
+  h3 {
+    font: 650 1.5rem/1.1 var(--display);
+  }
+
+  .way {
+    margin-top: 1rem;
+    font-size: 1rem;
+    color: var(--ash);
+  }
+
+  pre {
+    margin-top: 0.4rem;
+    padding: 0.75rem 0.9rem;
+    border-radius: 4px;
+    background: var(--soot);
+    color: var(--bone);
+    line-height: 1.7;
+  }
+
+  /* A long command wraps under itself, past the prompt, rather than hiding behind a scroll bar. */
+  .line {
+    display: block;
+    padding-left: 2ch;
+    text-indent: -2ch;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+
+  .prompt {
+    color: var(--gold);
+    user-select: none;
+  }
+
+  .build {
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 860px) {
+    .systems {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from './Hero.astro';
+import Points from './Points.astro';
+import Models from './Models.astro';
+import Agents from './Agents.astro';
+import Install from './Install.astro';
+import Saga from './Saga.astro';
+import type { Lang } from '../i18n/languages';
+import { t } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const text = t(lang);
+---
+
+<Base lang={lang} path="/" title={text.title} description={text.description}>
+  <Hero lang={lang} />
+  <Points lang={lang} />
+  <Models lang={lang} />
+  <Agents lang={lang} />
+  <Install lang={lang} />
+  <Saga lang={lang} />
+</Base>
