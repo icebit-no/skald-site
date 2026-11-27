@@ -1,0 +1,184 @@
+---
+import { toRunes } from '../runes';
+import { formatDecimal, type Lang } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import { models, nationalLibraryUrl, paperUrl, scaleMax } from '../models';
+
+interface Props {
+  lang: Lang;
+}
+
+const text = t(Astro.props.lang);
+// Measured models by their number, fewest errors first; a model not measured the same way follows without a bar.
+const measured = models.filter((m) => m.fleurs !== undefined).sort((a, b) => a.fleurs! - b.fleurs!);
+const unmeasured = models.filter((m) => m.fleurs === undefined);
+const badge = { default: text.defaultInSkald, beta: text.betaInSkald };
+const barWidth = (value: number) => `${((value / scaleMax) * 100).toFixed(2)}%`;
+---
+
+<section class="section" id="modell" aria-labelledby="models-heading">
+  <div class="wrap">
+    <span class="runes" aria-hidden="true">{toRunes(text.modelsHeading)}</span>
+    <h2 class="section-heading" id="models-heading">{text.modelsHeading}</h2>
+    <p class="lead">{text.modelsIntro}</p>
+
+    <table class="models">
+      <caption>{text.modelsCaption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">{text.modelColumn}</th>
+          <th scope="col">{text.errorsColumn}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          [...measured, ...unmeasured].map((model) => (
+            <tr class:list={[{ 'in-skald': model.inSkald === 'default' }]}>
+              <th scope="row">
+                <a href={model.url}>{model.name}</a>
+                <span class="maker">
+                  <span class="visually-hidden">{text.madeBy} </span>
+                  {model.maker}
+                </span>
+                {model.inSkald && <span class="badge">{badge[model.inSkald]}</span>}
+              </th>
+              {model.fleurs !== undefined ? (
+                <td>
+                  <span class="measure">
+                    <svg class="model-bar" width="100%" height="12" aria-hidden="true" focusable="false">
+                      <rect width={barWidth(model.fleurs)} height="12" rx="4" />
+                      <rect width="8" height="12" />
+                    </svg>
+                    <span class="value">{formatDecimal(model.fleurs)}</span>
+                  </span>
+                </td>
+              ) : (
+                <td class="unmeasured">{text.notMeasuredYet}</td>
+              )}
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+
+    <p class="note">
+      {text.modelsNoteBefore} <a href={paperUrl}>{text.modelsNotePaper}</a> (arXiv 2402.01917){text.modelsNoteAfter}
+    </p>
+    <p class="note">
+      {text.creditBefore} <a href={nationalLibraryUrl}>Nasjonalbiblioteket (NbAiLab)</a>{' '}{text.creditAfter}
+    </p>
+  </div>
+</section>
+
+<style>
+  .models {
+    width: 100%;
+    max-width: 52rem;
+    margin-top: 2.5rem;
+    border-collapse: collapse;
+  }
+
+  caption {
+    padding-bottom: 1rem;
+    text-align: left;
+    font: 650 1.2rem/1.3 var(--display);
+  }
+
+  thead th {
+    padding: 0 0 0.6rem;
+    border-bottom: 1px solid var(--seam);
+    text-align: left;
+    font: 500 0.78rem/1.4 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ash);
+  }
+
+  tbody th,
+  td {
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--seam);
+    vertical-align: middle;
+  }
+
+  tbody th {
+    width: 50%;
+    padding-right: 0.75rem;
+    text-align: left;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  tbody th a {
+    color: var(--bone);
+  }
+
+  tbody th a:hover {
+    color: var(--gold-hi);
+  }
+
+  .maker {
+    display: block;
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: var(--ash);
+  }
+
+  .badge {
+    display: inline-block;
+    white-space: nowrap;
+    margin-top: 0.35rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--gold);
+    border-radius: 3px;
+    font: 500 0.72rem/1.4 var(--mono);
+    color: var(--gold-hi);
+  }
+
+  .measure {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .model-bar {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: block;
+  }
+
+  .model-bar rect {
+    fill: var(--gold);
+  }
+
+  .in-skald .model-bar rect {
+    fill: var(--gold-hi);
+  }
+
+  .value {
+    flex: 0 0 2.6em;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    font-weight: 700;
+  }
+
+  .unmeasured {
+    color: var(--ash);
+    font-style: normal;
+  }
+
+  @media (min-width: 600px) {
+    tbody th {
+      width: 46%;
+      padding-right: 1rem;
+      font-size: 1.125rem;
+    }
+  }
+
+  .note {
+    max-width: 44rem;
+    margin-top: 1.25rem;
+    font-size: 1rem;
+    color: var(--ash);
+  }
+</style>

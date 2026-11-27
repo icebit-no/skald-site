@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import languageScript from '../scripts/language.js?url';
+import systemScript from '../scripts/system.js?url';
+import eczar from '../fonts/eczar-variable.woff2?url';
+import alegreyaSans from '../fonts/alegreya-sans-400.woff2?url';
+import Footer from '../components/Footer.astro';
+import { defaultLang, languages, pageUrl, type Lang } from '../i18n/languages';
+
+interface Props {
+  lang: Lang;
+  /** The page's address without a language, such as `/`; its two language versions are made from it. */
+  path: string;
+  title: string;
+  description: string;
+  noindex?: boolean;
+  /** False for a page that has no address of its own in each language, such as the 404 page. */
+  hasLanguages?: boolean;
+}
+
+const { lang, path, title, description, noindex = false, hasLanguages = true } = Astro.props;
+const site = Astro.site!;
+const absolute = (l: Lang) => new URL(pageUrl(l, path), site).href;
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
+    {hasLanguages && <link rel="canonical" href={absolute(lang)} />}
+    {hasLanguages && languages.map((l) => <link rel="alternate" hreflang={l} href={absolute(l)} />)}
+    {hasLanguages && <link rel="alternate" hreflang="x-default" href={absolute(defaultLang)} />}
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#12100d" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icon-16.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/icon-64.png" />
+    <link rel="apple-touch-icon" href="/icon-256.png" />
+    <link rel="preload" href={eczar} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={alegreyaSans} as="font" type="font/woff2" crossorigin />
+    <meta property="og:site_name" content="Skald" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:locale" content={lang === 'nn' ? 'nn_NO' : 'nb_NO'} />
+    <meta property="og:image" content={new URL('/icon-512.png', site).href} />
+    {hasLanguages && <meta property="og:url" content={absolute(lang)} />}
+    <script is:inline src={languageScript}></script>
+    <script is:inline src={systemScript}></script>
+  </head>
+  <body>
+    <main>
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

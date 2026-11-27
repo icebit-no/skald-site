@@ -1,0 +1,19 @@
+---
+// SKALD in strokes only, vertical and diagonal, stroke width 11 in a 364 × 100 box, mitre joins (docs/design.md in
+// icebit-no/skald, Identity). The stroke's colour and width come from the class the page gives it.
+interface Props {
+  class: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<svg class={className} viewBox="-8 -8 380 116" role="img" aria-label="Skald">
+  <g fill="none" stroke-linejoin="miter" stroke-miterlimit="6">
+    <path stroke-linecap="square" d="M60 6 L12 40 L54 62 L6 94"></path>
+    <g transform="translate(84 0)"><path stroke-linecap="square" d="M6 4 V96"></path><path stroke-linecap="butt" d="M6 56 L59.9 2.1 M26 36 L60.6 100.85"></path></g>
+    <g transform="translate(166 0)"><path stroke-linecap="square" d="M4 96 L30 16.5 L56 96"></path><path stroke-linecap="butt" d="M11.85 72 L42.9 56"></path></g>
+    <g transform="translate(244 0)"><path stroke-linecap="square" d="M8 4 V94"></path><path stroke-linecap="butt" d="M8 92 L48.9 71.5"></path></g>
+    <g transform="translate(310 0)"><path stroke-linecap="square" d="M6 4 V96"></path><path stroke-linecap="butt" d="M6 6 L54 50 L6 94"></path></g>
+  </g>
+</svg>

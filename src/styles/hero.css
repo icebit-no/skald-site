@@ -1,0 +1,320 @@
+/* The hero: one linocut print as the top of the site, concept A «Skalden i stamnen», sketch 7. The copy sits in the
+   dark half of the print when it is wide, and under it when it is narrow. The print's layers are drawn by
+   scripts/hero.js into .scene; these rules are global because the drawn elements carry no component scope. */
+
+.hw {
+  container-type: inline-size;
+  container-name: hw;
+}
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  isolation: isolate;
+  background: var(--soot);
+}
+
+.hero .defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.scene {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 13 / 11;
+  max-width: 100%;
+}
+
+.lyr {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 0.62rem;
+  justify-items: start;
+  min-width: 0;
+  padding-block: 0.5rem 2rem;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+
+.wm {
+  display: block;
+  width: min(11.5rem, 56%);
+  height: auto;
+  fill: none;
+  stroke: var(--bone);
+  stroke-width: 11;
+}
+
+.tag {
+  font: 650 clamp(1.7rem, 8cqw, 2.4rem)/1.06 var(--display);
+  letter-spacing: -0.012em;
+}
+
+.tag .l {
+  display: inline-block;
+}
+
+.sub {
+  font-size: 1rem;
+  line-height: 1.45;
+  color: var(--ash);
+  max-width: 34rem;
+}
+
+.cta {
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+  margin-top: 0.3rem;
+}
+
+.dl {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.45em 0.7em;
+  max-width: 100%;
+  background: var(--gold);
+  color: var(--on-gold);
+  font: 700 clamp(0.95rem, 4.4cqw, 1.06rem)/1 var(--body);
+  padding: 0.85em 1.1em;
+  border-radius: 5px;
+  box-shadow: 0 0 0 1px var(--gold-hi) inset;
+  text-decoration: none;
+}
+
+.dl > * {
+  white-space: nowrap;
+}
+
+.dl small {
+  font: 500 0.66em/1 var(--mono);
+  opacity: 0.72;
+}
+
+.dl:hover {
+  background: var(--gold-hi);
+  color: var(--on-gold);
+}
+
+.alt {
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 0.96rem;
+  color: var(--ash);
+}
+
+.alt a {
+  color: var(--ash);
+  text-decoration: underline;
+  text-decoration-color: var(--seam);
+  text-underline-offset: 3px;
+}
+
+.alt a:hover {
+  color: var(--bone);
+  text-decoration-color: var(--gold);
+}
+
+/* The other systems are followed by a dot; the source link, always last, is not. */
+.alt [data-system]::after {
+  content: '·';
+  display: inline-block;
+  padding-inline: 0.45em;
+  color: var(--ash);
+  text-decoration: none;
+}
+
+/* The download button for the visitor's system (scripts/system.js names it on <html>); macOS until known. */
+.dl[data-system='windows'],
+.dl[data-system='linux'],
+.alt [data-system='macos'],
+:root[data-system='windows'] .dl[data-system='macos'],
+:root[data-system='linux'] .dl[data-system='macos'],
+:root[data-system='windows'] .alt [data-system='windows'],
+:root[data-system='linux'] .alt [data-system='linux'] {
+  display: none;
+}
+
+:root[data-system='windows'] .dl[data-system='windows'],
+:root[data-system='linux'] .dl[data-system='linux'] {
+  display: inline-flex;
+}
+
+:root[data-system='windows'] .alt [data-system='macos'],
+:root[data-system='linux'] .alt [data-system='macos'] {
+  display: inline;
+}
+
+/* Language switch, in the corner of the print. */
+.lang {
+  position: absolute;
+  z-index: 3;
+  top: 0.7rem;
+  right: max(12px, env(safe-area-inset-right, 0px));
+  display: flex;
+  align-items: center;
+  padding: 0 0.25rem;
+  background: var(--soot);
+  background: color-mix(in srgb, var(--soot) 80%, transparent);
+  border-radius: 4px;
+  font: 400 0.86rem/1 var(--body);
+}
+
+.lang a {
+  color: var(--ash);
+  text-decoration: none;
+  padding: 0.62rem 0.5rem;
+  border-radius: 3px;
+}
+
+.lang a + a::before {
+  content: '·';
+  color: var(--ash);
+  font-weight: 400;
+  margin-left: -0.5rem;
+  padding-right: 0.5rem;
+}
+
+.lang a:hover {
+  color: var(--bone);
+}
+
+.lang a[aria-current='page'] {
+  color: var(--bone);
+  font-weight: 700;
+}
+
+@container hw (min-width: 760px) {
+  .hero {
+    min-height: 56.25cqw;
+  }
+
+  .scene {
+    position: absolute;
+    inset: 0;
+    aspect-ratio: auto;
+  }
+
+  .copy {
+    padding: 0;
+    gap: 1.35cqw;
+    align-self: start;
+    margin: 16.6cqw 0 3cqw 5cqw;
+    width: 41cqw;
+  }
+
+  .wm {
+    width: 24cqw;
+  }
+
+  .tag {
+    font-size: 3.5cqw;
+    line-height: 1.08;
+  }
+
+  .tag .l {
+    display: block;
+  }
+
+  .sub {
+    font-size: clamp(0.95rem, 1.42cqw, 1.2rem);
+    line-height: 1.5;
+    max-width: 35.5cqw;
+  }
+
+  .dl {
+    font-size: clamp(0.95rem, 1.42cqw, 1.15rem);
+    gap: 0.75em;
+    padding: 0.95em 1.25em;
+  }
+
+  .dl small {
+    font-size: 0.7rem;
+  }
+
+  .alt {
+    font-size: clamp(0.86rem, 1.2cqw, 1rem);
+  }
+
+  .lang {
+    top: 1.3cqw;
+    right: max(1.5cqw, env(safe-area-inset-right, 0px));
+  }
+}
+
+/* Inks */
+.f-bone { fill: var(--bone); }
+.f-ochre { fill: var(--ochre); }
+.f-gold { fill: var(--gold); }
+.f-gold2 { fill: var(--gold-hi); }
+.f-soot { fill: var(--soot); }
+.f-iron { fill: var(--iron); }
+.f-seam { fill: var(--seam); }
+.s-bone, .s-ochre, .s-gold, .s-gold2, .s-soot, .s-seam { fill: none; stroke-linecap: square; stroke-linejoin: miter; }
+.s-bone { stroke: var(--bone); }
+.s-ochre { stroke: var(--ochre); }
+.s-gold { stroke: var(--gold); }
+.s-gold2 { stroke: var(--gold-hi); }
+.s-soot { stroke: var(--soot); }
+.s-seam { stroke: var(--seam); }
+.bt { stroke-linecap: butt; }
+.cas { stroke: var(--soot); paint-order: stroke; stroke-linejoin: round; }
+
+/* Motion: slow, and only on whole layers or small marks. */
+@keyframes bar {
+  from { transform: scaleY(1); }
+  to { transform: scaleY(0.6); }
+}
+
+.scene .bar {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: bar var(--t) ease-in-out var(--d) infinite alternate;
+}
+
+@keyframes sway {
+  from { transform: translateX(calc(-1 * var(--amp))); }
+  to { transform: translateX(var(--amp)); }
+}
+
+.lyr.wt {
+  animation: sway var(--t) ease-in-out var(--d) infinite alternate;
+}
+
+.lyr.wt.rev {
+  animation-direction: alternate-reverse;
+}
+
+@keyframes bob {
+  from { transform: translateY(-1.5px) rotate(-0.4deg); }
+  to { transform: translateY(1.5px) rotate(0.4deg); }
+}
+
+.lyr.ship {
+  animation: bob 5.5s ease-in-out infinite alternate;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene *,
+  .scene .lyr {
+    animation: none !important;
+  }
+}

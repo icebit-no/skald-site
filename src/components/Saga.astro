@@ -1,0 +1,107 @@
+---
+import { formatDate, type Lang } from '../i18n/languages';
+import { t } from '../i18n/ui';
+import { toRunes } from '../runes';
+import { releases, releasesUrl } from '../releases';
+
+interface Props {
+  lang: Lang;
+}
+
+const text = t(Astro.props.lang);
+const list = await releases();
+---
+
+<section class="section" id="sagaen" aria-labelledby="saga-heading">
+  <div class="wrap">
+    <span class="runes" aria-hidden="true">{toRunes(text.sagaHeading)}</span>
+    <h2 class="section-heading" id="saga-heading">{text.sagaHeading}</h2>
+    <p class="lead">{text.sagaIntro}</p>
+
+    {
+      list.length === 0 ? (
+        <p class="none">
+          {text.sagaNone} <a href={releasesUrl}>{text.sagaAllOnGitHub}</a>.
+        </p>
+      ) : (
+        <ol class="releases">
+          {list.map((release) => (
+            <li>
+              <h3>
+                {release.name}
+                {release.prerelease && <span class="pre">{text.sagaPrerelease}</span>}
+              </h3>
+              <p class="date">
+                <time datetime={release.published.toISOString()}>{formatDate(release.published)}</time>
+              </p>
+              {release.html && <div class="notes" set:html={release.html} />}
+              <p class="more">
+                <a href={release.url}>{text.sagaReadOnGitHub}</a>
+              </p>
+            </li>
+          ))}
+        </ol>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .none {
+    max-width: 44rem;
+    margin-top: 1.5rem;
+    padding: 0.9rem 1.1rem;
+    border-left: 3px solid var(--seam);
+    background: var(--hearth);
+  }
+
+  .releases {
+    display: grid;
+    gap: 2rem;
+    max-width: 44rem;
+    margin: 2rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .releases li {
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--seam);
+  }
+
+  h3 {
+    font: 650 1.5rem/1.15 var(--display);
+  }
+
+  .pre {
+    margin-left: 0.6rem;
+    font: 500 0.75rem/1 var(--mono);
+    color: var(--gold-hi);
+    vertical-align: middle;
+  }
+
+  .date {
+    margin-top: 0.2rem;
+    font-size: 0.95rem;
+    color: var(--ash);
+  }
+
+  .notes {
+    margin-top: 0.8rem;
+    color: var(--bone);
+  }
+
+  .notes :global(:is(p, ul, ol)) {
+    margin: 0.6rem 0 0;
+  }
+
+  .notes :global(:is(h1, h2, h3, h4)) {
+    margin: 1rem 0 0;
+    font: 650 1.15rem/1.2 var(--display);
+  }
+
+  .more {
+    margin-top: 0.8rem;
+    font-size: 0.95rem;
+  }
+</style>

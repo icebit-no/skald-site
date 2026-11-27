@@ -1,0 +1,144 @@
+---
+import { toRunes } from '../runes';
+import type { Lang } from '../i18n/languages';
+import { t } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const text = t(Astro.props.lang);
+---
+
+<section class="section" id="agent" aria-labelledby="agents-heading">
+  <div class="wrap columns">
+    <div>
+      <span class="runes" aria-hidden="true">{toRunes(text.agentsHeading)}</span>
+      <h2 class="section-heading" id="agents-heading">{text.agentsHeading}</h2>
+      <p class="lead">
+        {text.agentsIntroBefore} <code>skald</code>{text.agentsIntroAfter} <code>--json</code>.
+      </p>
+      <p class="lead">
+        <code>skald skill install</code>{' '}{text.agentsSkillAfter} <code>skald mcp</code>{' '}{text.agentsMcpAfter}
+      </p>
+    </div>
+
+    <figure class="exchange">
+      <p class="said"><span class="who">{text.agentsYouSay}</span> {text.agentsExchange}</p>
+      <p class="who">{text.agentsAgentRuns}</p>
+      <pre><code><span class="prompt" aria-hidden="true">$ </span>skald fix add "mercha" "merget"
+<span class="prompt" aria-hidden="true">$ </span>skald vocab add merget</code></pre>
+    </figure>
+  </div>
+
+  <div class="wrap">
+    <h3 class="commands-heading">{text.commandsCaption}</h3>
+    <dl class="commands">
+      {
+        text.commands.map(([command, does]) => (
+          <div>
+            <dt>
+              <code>{command}</code>
+            </dt>
+            <dd>{does}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </div>
+</section>
+
+<style>
+  .columns {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  .exchange {
+    padding: 1.25rem;
+    border: 1px solid var(--seam);
+    border-radius: 6px;
+    background: var(--hearth);
+  }
+
+  .said {
+    margin-bottom: 1rem;
+  }
+
+  .who {
+    display: block;
+    font: 500 0.78rem/1.6 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ash);
+  }
+
+  .said .who {
+    margin-bottom: 0.2rem;
+  }
+
+  pre {
+    margin-top: 0.4rem;
+    /* Each command fits on one line down to a 360 px screen. */
+    font-size: min(0.875em, 3.55vw);
+    padding: 0.9rem 1rem;
+    overflow-x: auto;
+    border-radius: 4px;
+    background: var(--soot);
+    color: var(--bone);
+    line-height: 1.7;
+  }
+
+  .prompt {
+    color: var(--gold);
+    user-select: none;
+  }
+
+  .commands-heading {
+    margin-top: 3rem;
+    padding-bottom: 0.75rem;
+    font: 650 1.2rem/1.3 var(--display);
+  }
+
+  .commands {
+    margin: 0;
+  }
+
+  .commands div {
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--seam);
+  }
+
+  .commands code {
+    padding: 0;
+    background: none;
+    color: var(--gold-hi);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .commands dd {
+    margin: 0.15rem 0 0;
+    color: var(--ash);
+    font-size: 1rem;
+  }
+
+  @media (min-width: 860px) {
+    .columns {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 4rem;
+    }
+
+    .commands div {
+      display: grid;
+      grid-template-columns: 40% 1fr;
+      gap: 1.5rem;
+    }
+
+    .commands dd {
+      margin-top: 0;
+    }
+  }
+</style>
